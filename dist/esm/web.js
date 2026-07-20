@@ -1,0 +1,105 @@
+import { WebPlugin } from '@capacitor/core';
+import { AdmobConsentStatus } from './consent/consent-status.enum';
+import { PrivacyOptionsRequirementStatus } from './consent/privacy-options-requirement-status.enum';
+export class AdMobWeb extends WebPlugin {
+    async initialize() {
+        console.log('initialize');
+    }
+    async requestTrackingAuthorization() {
+        console.log('requestTrackingAuthorization');
+    }
+    async trackingAuthorizationStatus() {
+        return {
+            status: 'authorized',
+        };
+    }
+    async requestConsentInfo(options) {
+        console.log('requestConsentInfo', options);
+        return {
+            status: AdmobConsentStatus.REQUIRED,
+            isConsentFormAvailable: true,
+            canRequestAds: true,
+            privacyOptionsRequirementStatus: PrivacyOptionsRequirementStatus.REQUIRED,
+        };
+    }
+    async showPrivacyOptionsForm() {
+        console.log('showPrivacyOptionsForm');
+    }
+    async showConsentForm() {
+        console.log('showConsentForm');
+        return {
+            status: AdmobConsentStatus.REQUIRED,
+            canRequestAds: true,
+            privacyOptionsRequirementStatus: PrivacyOptionsRequirementStatus.REQUIRED,
+        };
+    }
+    async resetConsentInfo() {
+        console.log('resetConsentInfo');
+    }
+    async setApplicationMuted(options) {
+        console.log('setApplicationMuted', options);
+    }
+    async setApplicationVolume(options) {
+        console.log('setApplicationVolume', options);
+    }
+    async showBanner(options) {
+        console.log('showBanner', options);
+    }
+    async hideBanner() {
+        console.log('hideBanner');
+    }
+    async resumeBanner() {
+        console.log('resumeBanner');
+    }
+    async removeBanner() {
+        console.log('removeBanner');
+    }
+    async prepareInterstitial(options) {
+        console.log('prepareInterstitial', options);
+        return {
+            adUnitId: options.adId,
+        };
+    }
+    async showInterstitial() {
+        console.log('showInterstitial');
+    }
+    async prepareRewardVideoAd(options) {
+        console.log('prepareRewardVideoAd', options);
+        return {
+            adUnitId: options.adId,
+        };
+    }
+    async showRewardVideoAd() {
+        return {
+            type: '',
+            amount: 0,
+        };
+    }
+    async prepareRewardInterstitialAd(options) {
+        console.log('prepareRewardInterstitialAd', options);
+        return {
+            adUnitId: options.adId,
+        };
+    }
+    async showRewardInterstitialAd() {
+        return {
+            type: '',
+            amount: 0,
+        };
+    }
+    async loadAppOpen(options) {
+        console.log('loadAppOpen', options);
+    }
+    async showAppOpen() {
+        console.log('showAppOpen');
+    }
+    async isAppOpenLoaded() {
+        return { value: false };
+    }
+    addListener(eventName, listenerFunc) {
+        void listenerFunc;
+        console.log('addListener', eventName);
+        return Promise.resolve({ remove: () => Promise.resolve() });
+    }
+}
+//# sourceMappingURL=web.js.map
