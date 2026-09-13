@@ -50,6 +50,12 @@ class BannerExecutor: NSObject, BannerViewDelegate {
             self.bannerView.delegate = self
 
             call.resolve([:])
+        } else {
+            // Same reason as the `mAdView != null` branch on Android: every path out of
+            // showBanner must settle the call. Falling through the `if let` left the JS
+            // promise PENDING forever, which a caller's try/catch cannot see and no
+            // timeout inside the plugin ever cancels. Matches AppOpenAdPlugin's wording.
+            call.reject("No rootViewController")
         }
     }
 

@@ -64,6 +64,12 @@ public class BannerExecutor extends Executor {
 
         if (mAdView != null) {
             updateExistingAdView(adOptions);
+            // Must resolve here too: without it the JS promise returned by showBanner()
+            // stays PENDING forever whenever a banner view already exists. A caller that
+            // awaits it never runs its continuation — so the plugin silently loses the
+            // "the banner is up" signal, and any state it keeps behind that await (height
+            // reservation, visibility bookkeeping) is stuck for the rest of the session.
+            call.resolve();
             return;
         }
 
@@ -169,6 +175,14 @@ public class BannerExecutor extends Executor {
                         notifyListeners(BannerAdPluginEvents.SizeChanged.getWebEventName(), sizeInfo);
 
                         call.resolve();
+                    } else {
+                        // Same never-settling shape as showBanner's early return above:
+                        // dropping out of the runnable without touching `call` leaves the
+                        // JS promise pending for good. No known path reaches this today
+                        // (mAdViewLayout is never nulled), but a PluginCall must settle on
+                        // every branch — an unreachable reject costs nothing, a pending
+                        // promise costs a caller that can never be woken up.
+                        call.reject("You tried to hide a banner that has no layout");
                     }
                 });
         } catch (Exception ex) {
